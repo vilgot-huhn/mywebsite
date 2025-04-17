@@ -9,18 +9,19 @@ website:
       - href: index.qmd
         text: Home
       - projects.qmd
+      - blog.qmd
     tools:
       - icon: twitter
-        href: https://twitter.com/
+        href: https://twitter.com/vilgothuhn
       - icon: github
         href: https://github.com/vilgot-huhn/mywebsite
   page-footer:
     right: "Built with [Quarto](https://quarto.org/)"
-    left: "&copy; Copyright 2023, Vilgot Huhn"
+    left: "&copy; Copyright 2025, Vilgot Huhn"
 
 format:
   html:
-    theme: cerulean
+    theme: lux
     toc: true
 
 editor: source

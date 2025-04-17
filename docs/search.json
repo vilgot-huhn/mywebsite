@@ -14,10 +14,38 @@
     "text": "Project 3"
   },
   {
+    "objectID": "blog.html",
+    "href": "blog.html",
+    "title": "personal blog",
+    "section": "",
+    "text": "I write my personal blog at substack. It’s called unconfusion and so far mostly concerns internet discourse. I find some posts age quickly, but I stood by them when I wrote them and I can never change that."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "About Me",
     "section": "",
-    "text": "Thanks for checking out my web site!"
+    "text": "I’m a PhD student in psychology at Karolinska Institutet, Stockholm. My research concerns Cognitive Behavioral Therapy as guided self-help online (ICBT) and Generalized Anxiety Disorder (GAD). I’m specifically focused on whether the mechanisms of change implied by our cognitive models of worry is actually at work within (I)CBT treatments.\n\n\n\nI have a general interest in psychology since I was a teenager. I’ve become especially interested in:\n\nCognitive biases in decision making and belief formation.\nMotivated cognition.\nWhat are beliefs even?\nThe neuroscience of emotion.\nPsychiatric diagnostic reasoning and nosology.\n\n\n\n\nI like playing dungeons and dragons with my friends and going on a trek in the Swedish mountains.\nThanks for checking out my web site!"
+  },
+  {
+    "objectID": "index.html#professional-research-interests",
+    "href": "index.html#professional-research-interests",
+    "title": "About Me",
+    "section": "",
+    "text": "I’m a PhD student in psychology at Karolinska Institutet, Stockholm. My research concerns Cognitive Behavioral Therapy as guided self-help online (ICBT) and Generalized Anxiety Disorder (GAD). I’m specifically focused on whether the mechanisms of change implied by our cognitive models of worry is actually at work within (I)CBT treatments."
+  },
+  {
+    "objectID": "index.html#less-professional-research-interests",
+    "href": "index.html#less-professional-research-interests",
+    "title": "About Me",
+    "section": "",
+    "text": "I have a general interest in psychology since I was a teenager. I’ve become especially interested in:\n\nCognitive biases in decision making and belief formation.\nMotivated cognition.\nWhat are beliefs even?\nThe neuroscience of emotion.\nPsychiatric diagnostic reasoning and nosology."
+  },
+  {
+    "objectID": "index.html#abjectly-uprofessional-interests",
+    "href": "index.html#abjectly-uprofessional-interests",
+    "title": "About Me",
+    "section": "",
+    "text": "I like playing dungeons and dragons with my friends and going on a trek in the Swedish mountains."
   }
 ]
