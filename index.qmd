@@ -3,17 +3,17 @@ title: "About Me"
 about:
   id: me
   template: broadside
-  image: img/profilbild.png
+  image: img/profilbild.jpg
 ---
 
 ::: {#me}
 ## Professional research interests
 
-I'm a PhD student in psychology at Karolinska Institutet, Stockholm. My research concerns Cognitive Behavioral Therapy as guided self-help online (ICBT) and Generalized Anxiety Disorder (GAD). I'm specifically focused on whether the mechanisms of change implied by our cognitive models of worry is actually at work within (I)CBT treatments.
+I'm a PhD student in psychology at Karolinska Institutet, Stockholm. My research concerns Cognitive Behavioral Therapy as guided self-help online (ICBT) and Generalized Anxiety Disorder (GAD). I'm specifically focused on whether the mechanisms of change implied by our cognitive models of worry is actually at work within (I)CBT treatments. Other than that I have an interest in methods and meta-science and organize the ReproducibiliTea Journal Club at KI.
 
 ## Less professional research interests
 
-I have a general interest in psychology since I was a teenager. I've become especially interested in:
+I've been generally interested in psychology since I was a teenager. Some areas I'm especially nerdy about are:
 
  - Cognitive biases in decision making and belief formation.
  - Motivated cognition.
@@ -23,7 +23,7 @@ I have a general interest in psychology since I was a teenager. I've become espe
 
 ## Abjectly uprofessional interests
 
-I like playing dungeons and dragons with my friends and going on a trek in the Swedish mountains. 
+Dungeons and Dragons. Kino. Going on a trek in the Swedish mountains. Graphic novels. Radiohead.
 :::
 
 Thanks for checking out my web site!

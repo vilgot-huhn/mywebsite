@@ -1,0 +1,19 @@
+---
+title: "blog post title"
+description: "I'm trying to figure out how to write posts on my quatro website"
+author: 
+  - name: Vilgot Huhn
+date: 2025-04-17
+---
+
+Some questions I have about these posts. Do they inherit theme from `_quatro.yml`? Do they re-render automatically if there's a change in them, i.e. if there's a html file already with the same name?
+
+Do LaTeX work on the site? Let's try it. Works poorly since double slash doesn't make new lines so you have to `\begin{aligned}` and then `\end{aligned}`
+
+$$
+\begin{aligned}
+y_i \sim Normal(\mu,\sigma) \\
+\mu \sim Normal(180,12) \\
+\sigma \sim Exponential(1)
+\end{aligned}
+$$

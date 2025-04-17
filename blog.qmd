@@ -2,4 +2,4 @@
 title: "personal blog"
 ---
 
-I write my personal blog at substack. It's called [unconfusion](https://unconfusion.substack.com/) and so far mostly concerns internet discourse. I find some posts age quickly, but I stood by them when I wrote them and I can never change that.
+I write my personal blog at Substack. It's called [unconfusion](https://unconfusion.substack.com/) and so far mostly concerns online discourse. I find some posts age quickly, but I stood by them when I wrote them and I can never change that.

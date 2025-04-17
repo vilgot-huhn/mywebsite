@@ -1,51 +1,51 @@
 [
   {
-    "objectID": "projects.html#project-2",
-    "href": "projects.html#project-2",
-    "title": "Projects",
-    "section": "Project 2",
-    "text": "Project 2"
-  },
-  {
-    "objectID": "projects.html#project-3",
-    "href": "projects.html#project-3",
-    "title": "Projects",
-    "section": "Project 3",
-    "text": "Project 3"
+    "objectID": "posts/20250417_First_Blogpost/index.html",
+    "href": "posts/20250417_First_Blogpost/index.html",
+    "title": "blog post title",
+    "section": "",
+    "text": "Some questions I have about these posts. Do they inherit theme from _quatro.yml? Do they re-render automatically if there’s a change in them, i.e. if there’s a html file already with the same name?\nDo LaTeX work on the site? Let’s try it. Works poorly since double slash doesn’t make new lines so you have to \\begin{aligned} and then \\end{aligned}\n\\[\n\\begin{aligned}\ny_i \\sim Normal(\\mu,\\sigma) \\\\\n\\mu \\sim Normal(180,12) \\\\\n\\sigma \\sim Exponential(1)\n\\end{aligned}\n\\]"
   },
   {
     "objectID": "blog.html",
     "href": "blog.html",
     "title": "personal blog",
     "section": "",
-    "text": "I write my personal blog at substack. It’s called unconfusion and so far mostly concerns internet discourse. I find some posts age quickly, but I stood by them when I wrote them and I can never change that."
+    "text": "I write my personal blog at Substack. It’s called unconfusion and so far mostly concerns online discourse. I find some posts age quickly, but I stood by them when I wrote them and I can never change that."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "About Me",
     "section": "",
-    "text": "I’m a PhD student in psychology at Karolinska Institutet, Stockholm. My research concerns Cognitive Behavioral Therapy as guided self-help online (ICBT) and Generalized Anxiety Disorder (GAD). I’m specifically focused on whether the mechanisms of change implied by our cognitive models of worry is actually at work within (I)CBT treatments.\n\n\n\nI have a general interest in psychology since I was a teenager. I’ve become especially interested in:\n\nCognitive biases in decision making and belief formation.\nMotivated cognition.\nWhat are beliefs even?\nThe neuroscience of emotion.\nPsychiatric diagnostic reasoning and nosology.\n\n\n\n\nI like playing dungeons and dragons with my friends and going on a trek in the Swedish mountains.\nThanks for checking out my web site!"
+    "text": "I’m a PhD student in psychology at Karolinska Institutet, Stockholm. My research concerns Cognitive Behavioral Therapy as guided self-help online (ICBT) and Generalized Anxiety Disorder (GAD). I’m specifically focused on whether the mechanisms of change implied by our cognitive models of worry is actually at work within (I)CBT treatments. Other than that I have an interest in methods and meta-science and organize the ReproducibiliTea Journal Club at KI.\n\n\n\nI’ve been generally interested in psychology since I was a teenager. Some areas I’m especially nerdy about are:\n\nCognitive biases in decision making and belief formation.\nMotivated cognition.\nWhat are beliefs even?\nThe neuroscience of emotion.\nPsychiatric diagnostic reasoning and nosology.\n\n\n\n\nDungeons and Dragons. Kino. Going on a trek in the Swedish mountains. Graphic novels. Radiohead.\nThanks for checking out my web site!"
   },
   {
     "objectID": "index.html#professional-research-interests",
     "href": "index.html#professional-research-interests",
     "title": "About Me",
     "section": "",
-    "text": "I’m a PhD student in psychology at Karolinska Institutet, Stockholm. My research concerns Cognitive Behavioral Therapy as guided self-help online (ICBT) and Generalized Anxiety Disorder (GAD). I’m specifically focused on whether the mechanisms of change implied by our cognitive models of worry is actually at work within (I)CBT treatments."
+    "text": "I’m a PhD student in psychology at Karolinska Institutet, Stockholm. My research concerns Cognitive Behavioral Therapy as guided self-help online (ICBT) and Generalized Anxiety Disorder (GAD). I’m specifically focused on whether the mechanisms of change implied by our cognitive models of worry is actually at work within (I)CBT treatments. Other than that I have an interest in methods and meta-science and organize the ReproducibiliTea Journal Club at KI."
   },
   {
     "objectID": "index.html#less-professional-research-interests",
     "href": "index.html#less-professional-research-interests",
     "title": "About Me",
     "section": "",
-    "text": "I have a general interest in psychology since I was a teenager. I’ve become especially interested in:\n\nCognitive biases in decision making and belief formation.\nMotivated cognition.\nWhat are beliefs even?\nThe neuroscience of emotion.\nPsychiatric diagnostic reasoning and nosology."
+    "text": "I’ve been generally interested in psychology since I was a teenager. Some areas I’m especially nerdy about are:\n\nCognitive biases in decision making and belief formation.\nMotivated cognition.\nWhat are beliefs even?\nThe neuroscience of emotion.\nPsychiatric diagnostic reasoning and nosology."
   },
   {
     "objectID": "index.html#abjectly-uprofessional-interests",
     "href": "index.html#abjectly-uprofessional-interests",
     "title": "About Me",
     "section": "",
-    "text": "I like playing dungeons and dragons with my friends and going on a trek in the Swedish mountains."
+    "text": "Dungeons and Dragons. Kino. Going on a trek in the Swedish mountains. Graphic novels. Radiohead."
+  },
+  {
+    "objectID": "posts.html",
+    "href": "posts.html",
+    "title": "R posts",
+    "section": "",
+    "text": "blog post title\n\n\nI’m trying to figure out how to write posts on my quatro website\n\n\n\nVilgot Huhn\n\n\nApr 17, 2025\n\n\n\n\n\n\n\n\nNo matching items"
   }
 ]

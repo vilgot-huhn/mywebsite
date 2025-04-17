@@ -3,13 +3,14 @@ project:
   output-dir: docs
   
 website:
-  title: "Vilgots website"
+  title: "Vilgot's website"
   navbar:
     left:
       - href: index.qmd
         text: Home
       - projects.qmd
       - blog.qmd
+      - posts.qmd
     tools:
       - icon: twitter
         href: https://twitter.com/vilgothuhn
