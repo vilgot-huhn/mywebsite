@@ -6,4 +6,5 @@ listing:
   sort: "date desc" # can also sort on more than one field
   categories: true # allows you to sort posts by assigned categories 
 ---
-Here I share posts that connect either to psychology or to statistics. Some are cross-posted on substack.
+
+Here I share posts that connect either to psychology or to statistics. Some are cross-posted on [substack](unconfusion.substack.com).
