@@ -7,10 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Vilgot Huhn">
-<meta name="dcterms.date" content="2024-03-31">
+<meta name="dcterms.date" content="2023-12-16">
 <meta name="description" content="reposted from substack">
 
-<title>Vilgot’s website - Against using Nicholas Cage movies to teach correlation and causation</title>
+<title>Vilgot’s website - Oh No! Berkson’s paradox in clinical theories</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -113,10 +113,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#reason-1-wheres-the-doom-and-gloom" id="toc-reason-1-wheres-the-doom-and-gloom" class="nav-link active" data-scroll-target="#reason-1-wheres-the-doom-and-gloom">Reason 1: Where’s the doom and gloom?</a></li>
-  <li><a href="#reason-2-why-always-time-series-data" id="toc-reason-2-why-always-time-series-data" class="nav-link" data-scroll-target="#reason-2-why-always-time-series-data">Reason 2: Why always time-series data?</a></li>
-  <li><a href="#reason-3-random-correlation-vs.-spurious-correlation" id="toc-reason-3-random-correlation-vs.-spurious-correlation" class="nav-link" data-scroll-target="#reason-3-random-correlation-vs.-spurious-correlation">Reason 3: random correlation vs.&nbsp;spurious correlation</a></li>
-  <li><a href="#how-to-teach-this-then" id="toc-how-to-teach-this-then" class="nav-link" data-scroll-target="#how-to-teach-this-then">How to teach this then?</a></li>
+  <li><a href="#lets-start-with-a-story." id="toc-lets-start-with-a-story." class="nav-link active" data-scroll-target="#lets-start-with-a-story.">Let’s start with a story.</a></li>
+  <li><a href="#oh-no" id="toc-oh-no" class="nav-link" data-scroll-target="#oh-no">Oh no…</a></li>
+  <li><a href="#is-this-common-does-this-happen" id="toc-is-this-common-does-this-happen" class="nav-link" data-scroll-target="#is-this-common-does-this-happen">Is this common? Does this happen?</a></li>
   </ul>
 </nav>
 </nav>
@@ -129,9 +128,9 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Against using Nicholas Cage movies to teach correlation and causation</h1>
+<h1 class="title">Oh No! Berkson’s paradox in clinical theories</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">teaching</div>
+    <div class="quarto-category">causal inference</div>
   </div>
   </div>
 
@@ -154,7 +153,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 31, 2024</p>
+      <p class="date">December 16, 2023</p>
     </div>
   </div>
   
@@ -164,45 +163,50 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>I recently took a short statistics course as part of my PhD-studies and came across one of my pet-peeves in introductory statistics content. In every intro to stats book or course, one of the objectives is to teach students that <em>correlation does not imply causation.</em> Very often this is taught with a graph like this:</p>
+<section id="lets-start-with-a-story." class="level2">
+<h2 class="anchored" data-anchor-id="lets-start-with-a-story.">Let’s start with a story.</h2>
+<p>Mike works as a clinical psychologist at a general psychiatric outpatient clinic. The people Mike sees have a wide range of issues, but all of them have real problems. Unemployment, broken relationships, loneliness, wasted potential, and usually a heavy mix of anxiety and hopelessness. In other words, mental illness, with all that comes with it. The word used among Mike’s colleagues is usually functional impairment, but he prefers to just think of misery.</p>
+<p>The people Mike assess and treat are almost always referred from a primary care physician who believes this person needs specialized care. Sometimes the clinic gets a referral with a patient that isn’t really that impaired - some primary care doctors don’t know that much about psychiatry. In those cases Mike’s doctor colleagues send them somewhere else before he, or someone like him, even sees them.</p>
+<p>Mike is a clever man, he’s good at spotting patterns. But he’s also careful. Humans in general are “pattern matchers”, and he knows this. We overfit our models. We see faces in clouds and rocks. After four heads in a row we think there’s bound to be a tail.</p>
+<p>Lately, however, Mike is becoming more and more confident in a certain pattern. He’s even starting to become confident in his theory as to why the pattern arises. He has noticed a trade-off between two types of mental processes - excitingly two things that aren’t trivially related. Some people he meets have a bit of a loose grip on reality, more than others. They usually have “weird beliefs”, supernatural stuff, stuff about fate, alternative theories. Nothing psychotic, in his experience, but perhaps “schizotypal”. Other people are really Anxious. Interestingly the people that are more anxious seem to have a more realistic view of the world, and conversely people who have more weird<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> spiritual beliefs about fate and the universe and how everything is connected seem to be less anxious.</p>
+<p>Maybe these beliefs and this style of thinking protects against anxiety? Maybe detaching yourself from the real world, giving yourself space to think more freely and openly guards you against the pain of reality. Since Mike is aware that the human mind often finds illusory correlations he instead chooses to gather data on his patients via other clinicians, blind to his theory. He explains his ideas of anxiousness and supernatural/weird beliefs and lets his colleagues get calibrated in scoring imaginary patient cases. Then they rate the patients they meet on these scales and hand the data to Mike.</p>
+<p>When the data has been collected the correlation is clearly visible and significant even at his relatively small sample! Heureka!</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="https://tylervigen.com/spurious/correlation/5837_the-number-of-movies-nicolas-cage-appeared-in_correlates-with_the-number-of-transportation-security-screeners-in-north-dakota"><img src="images/tylervigencage.jpg" class="img-fluid figure-img"></a></p>
-<figcaption class="figure-caption">From Tyler Vigens spurious correlation website.</figcaption>
+<p><img src="images/Berkson1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
-<p>The students in the audience laugh. What a silly correlation! Obviously there’s no causality there! They write down “correlation does not imply causation” and then the teacher move on to the next powerpoint slide.</p>
-<p>I don’t like these for a number of reasons.</p>
-<section id="reason-1-wheres-the-doom-and-gloom" class="level2">
-<h2 class="anchored" data-anchor-id="reason-1-wheres-the-doom-and-gloom">Reason 1: Where’s the doom and gloom?</h2>
-<p>My problem with these demonstrations is not that they don’t effectively communicate the point, but that they’re <strong>too</strong> effective. The non-validity of the correlation is so clear that you barely have to think about why anyone would ever come to draw causal conclusions from observational data. But we really do that all the time. Falling into causal thinking is a strong tendency in human cognition. Counteracting that takes effort. That means one should be suspicious of the pedagogical value of demonstrations that are absorbed so effortlessly.</p>
-<p>I think it’s better to set up examples where inferring causation comes naturally to people, then trip people up. Any good introduction to the idea “correlation does not imply causation” should first evoke a feeling of confusion. I always liked the example Daniel Kahneman (Rest In Peace) brought up in Thinking Fast and Slow when talking about our bias towards causal thinking:</p>
-<p>“Highly intelligent women tend to marry men who are less intelligent than they are.”</p>
+<p>It really makes sense doesn’t it? Most of the people he meets at the clinic live lives full of real tangible problems. Taking a step away from reality is bound to protect emotionally against that, at least a bit. Meanwhile having a realistic outlook on your marginalized situation is bound to fill you with some anxiety. The mental processes that lead to “weird beliefs” do seem to come with their own problems, sometimes conflicts with others, or trouble with goal oriented behaviour. But this may be a small price to pay for some peace of mind.</p>
 </section>
-<section id="reason-2-why-always-time-series-data" class="level2">
-<h2 class="anchored" data-anchor-id="reason-2-why-always-time-series-data">Reason 2: Why always time-series data?</h2>
-<p>This one is less of a consistent problem in intro-to-stats content but most examples I’ve seen have used time-series correlations to make this point. I think this is one of the reasons the demonstration slide down so easily. A lot of things happen in the world, just because thing A happened before thing B doesn’t mean there’s a causal relationship. Obviously! Although people sometimes do make that type of inference too easily, see for example <a href="https://www.reddit.com/r/interestingasfuck/comments/13i0u3q/the_curious_dynamics_of_the_number_of_mentally/">this graph about how reduced institutionalization in mental hospitals in the U.S. was followed by a growing prison population</a>, which I saw uncritically reposted multiple times last year, it is very clear to understand conceptually when no plausible causal link comes to mind.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<p>I think using time-series correlations where there is a readily available causal idea would be an improvement pedagogically. But most correlations we come across as in research won’t be time-series data. Instead it will often concern inter-individual variation, like a relationship between interleukin-6 and depressive symptoms, and the result will instead be visualized on a scatterplot with a regression line. I think the nature of these types of correlations are much more easily imbued with a vague aura of causality. <em>The very same individuals that had more interleukin had worse depressive symptoms!</em></p>
-<p>This type of data is just as observational as the time-series examples. I think it’s better to use them since they’re closer to the most common form of correlation.</p>
-</section>
-<section id="reason-3-random-correlation-vs.-spurious-correlation" class="level2">
-<h2 class="anchored" data-anchor-id="reason-3-random-correlation-vs.-spurious-correlation">Reason 3: random correlation vs.&nbsp;spurious correlation</h2>
-<p>I also think these funny and obviously non-causative correlations mix up (or at least combine) two different types of false relationships.</p>
-<p>If you look at a lot of random things sometimes you’ll get a “statistically significant” correlation, even when there’s no possible way there’s a relationship. Indeed the example pictured above is barely different from finding a significant association between yearly Nicholas Cage movies and a string of random numbers I generate on my computer (after trying a bunch of times). This random-number-version seems to lack the same demonstrative oomph for showing the limits of observational data. That’s because these examples are teaching two lessons at the same time! Besides the difference between observational and experimental data they are, at the same time, teaching students about the limits of hypothesis testing itself. If there’s no true correlation between the things you’re looking at you’ll still get a “significant” p-value 5% of the time. Cue the xkcd comic:</p>
+<section id="oh-no" class="level2">
+<h2 class="anchored" data-anchor-id="oh-no">Oh no…</h2>
+<p>You know we were getting to this. His selection of patients is conditioned. In this example our psychologist isn’t falling victim to some “illusory correlation”. He’s not seeing a relationship where none exist. In his data-set the correlation really is quite strong. What he misses is why it exists.</p>
+<p>Let’s say “weird beliefs” are bad for your level of “functional impairment” in a simple linear way. The more weird beliefs the more impairment.</p>
+<p>Let’s assume that anxiety is also bad for your functioning (it is). Adding these together we have <code>impairment = anxiety + weird beliefs</code>. So with one unit of anxiety and five units of “weird beliefs” you have six units of impairment.</p>
+<p>We can draw it like a gradient to make it really clear. The x and y axes represent weird beliefs and anxiety levels. Redder colour means more functional impairment.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/xkcdphacking.jpg" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">If you’ve used this comic as an example of “correlation does not imply causality” you’ve made a mistake. The comic is about p-hacking/data-dredging. The scientists are presumably doing RCTs</figcaption>
+<p><img src="images/Berkson2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
-<p>This double-lesson-property could give the false impression that if you look at enough things, you simply need to correct for multiple comparisons and find causative links! (These types of corrections are necessary and looking for associations is of course important, it can be a promising way to figure out what to explore further. But all this presupposes some prior idea of a plausible causal link).</p>
-<p>Relatedly one might get the idea that <em>replicating</em> the correlation in a subsequent study gets you closer to proving a causal link. Teaching people about the limits of hypothesis testing and the correct interpretation of p-values is no doubt important, but it’s fundamentally different from the problem with observational data. Or to put it simply: <strong>Confounding replicates.</strong></p>
+<p>At Mikes clinic, people who are not impaired enough don’t need to seek professional help at a clinic, or are sent elsewhere by whoever screens the referrals. Additionally, people who are in an acute crisis may be sent to even more specialized clinics, even inpatient care.</p>
+<p>The effect is that Mike’s patients exist in a limited range of functional impairment. Meanwhile if we were to look at a larger random sample of the population we see that there’s no relationship between anxiety and weird beliefs.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/Berkson3.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">I remind you this is simulated data.</figcaption>
+</figure>
+</div>
+<p>I remind you that this is simulated data. Indeed, the paradoxiest<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> part of Berkson’s paradox is that it can even reverse the direction of a correlation. Generally in psychiatry negative things are correlated, both for psychological reasons (for example negative emotions causing sleep issues) and for practical reasons (for example a depression having a negative impact on your financial security) and perhaps even for biological reason (there are positive genetic correlations between many different disorders). This has led to some researchers suggesting there’s a <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4209412/">general factor of psychopathology</a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. But even in those conditions, where there’s a positive correlation between the traits we look at, we can get a reversed correlation given the right selection effect:</p>
+<p><img src="images/Berkson4.png" class="img-fluid"></p>
 </section>
-<section id="how-to-teach-this-then" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-teach-this-then">How to teach this then?</h2>
-<p>I think good examples teaching this concept should first and foremost emphasize how confounders (e.g.&nbsp;common causes) can create plausible sounding and reliable statistical-but-non-causal relationships. And don’t use time-series data.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Beyond that I think it should show the fundamental rift between experimental data with manipulation and randomization, and observational data about the state of the world. This really is the central thing: Even when we have plausible-sounding mechanisms, randomized experiments can reveal things aren’t as we thought. Until we’ve done those experiments, or if we can’t do them, we’re always in a deeply more uncertain place scientifically.</p>
-<p>I don’t know any examples that I’ve found perfectly elegant. But I remember that one of my favourite science communicators Ben Goldacre had a nice part in his book Bad Science where he talked about antioxidant vitamin pills and lung cancer. He first set up the observed correlation between these things, and also set up a plausible mechanism to explain the correlation (the free radical theory of aging). That all sounds well and good, but when researchers actually ran clinical trials they found that the people who took the beta-carotene and vitamin A pills were more (!) likely to die from lung cancer. I think examples like this are good for instilling some doom and gloom and doubt about correlational data, but in an ideal case one should also present what the source of the spurious correlation was.</p>
-<p>To be fair, people rarely teach this concept with a single example. The problem I’m pointing at is a mostly unnecessary pet-peeve, I know. But I also do think the first impression people have of a concept matters, at least a bit. And for that purpose, I wish they would come up with something other that wacky time-series correlations.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<section id="is-this-common-does-this-happen" class="level2">
+<h2 class="anchored" data-anchor-id="is-this-common-does-this-happen">Is this common? Does this happen?</h2>
+<p>In my experience the culture in clinical psychology can be a bit contradictory. On one hand our education teaches us to be very sceptical. We’re taught to be careful not to make scientifically unwarranted claims. We’re taught to be suspicious of simplifications. Aware of unknown confounders. All that jazz. At the same time psychology often reveres clinical intuition. From a scientific point of view we often don’t know more than the fact that a bunch of questionnaires are internally consistent and correlate with each other in this and that way. Meanwhile in the land of clinical experience we can imagine ourselves knowing with high precision exactly why someone has a symptom, given their personality, their defences, their context (depending on who you ask). I don’t want to come of as too negative about that. Maybe people really are too multifaceted for “reductionism”? At the very least I think people’s psychological intuitions are often based on a sound understanding of how other humans work. I’m a human living among humans, so that intuition should be based off good data at least.</p>
+<p>The field of judgement and decision-making would have a lot to criticize about the above statement. They would point to our tendency to form bad intuitions in contexts where we can’t reasonably expect to form them, i.e.&nbsp;where feedback is delayed and noisy. Working as a therapist, unfortunately, is one such context. But in the story above that isn’t the problem. Even if you’re careful and well calibrated, you can’t make up for biased data. “Garbage in, garbage out” as we often say when it comes to meta-analyses and machine learning.</p>
+<p>I don’t mean to argue that this particular mistake is necessarily super common. I really don’t know. But no doubt it’s easy for clinicians to make their own theories, see potential trade-offs or see how patients cluster into types. Worry as a defence against sadness. Externalizing symptoms as a way to not feel anxiety. I get that these theories have supporting literature and arguments that go deeper than simple observations, but situations we often find ourselves in as clinicians may make these theories feel convincing for the wrong reasons.</p>
+<p>And I think this potential pattern is important to be aware of in a bunch of different contexts. For example you could imagine teachers at some sort of prestigious private school seeing a trade-off between being good at math and good at writing, in a way that makes them buy into questionable research about learning styles. Instead the pattern is because students get in to the school based on a sum of their grades, some more language-related, some more math-related. The same teachers could also plausibly spot false negative relationships between learning fast and being industrious (“they’re smart so they don’t have to learn any study-strategies”). Life is full of unrepresentative samples.</p>
+<p>Basically you always need to think about where your sample comes from, and if the reason your subjects get sampled could plausibly be related to the variables you’re looking at you need to be careful what you conclude. And it’s worthwhile to remember that even if you’re well calibrated and careful, there’s a good reason that scientific research has a higher status than your individual observations.</p>
 
 
 </section>
@@ -211,9 +215,9 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>There is something extra fragile with time-series correlations. There’s only one world and history only happened once. I think this is one of the reasons subjects like political science is in an epistemically more difficult position than for example medicine.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>unless students are likely to primarily work with that.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>This post may seem like an attack on Tyler Vigen’s spurious correlation website. I want to be clear I have nothing against the site and I think it’s a funny project and even a good viral type of science communication. It’s existence online is good! My problem here is with it’s repeated role in into-to-stats content for university level students.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Weird according to Mike, that is.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Yes.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>I have not looked into it and though I prima facie trust the finding I tend to have a negative reaction to these efforts to squish a bunch of things together and say they’re all part of the same underlying thing.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

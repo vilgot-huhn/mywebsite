@@ -4,9 +4,10 @@ description: "reposted from substack"
 author: 
   - name: Vilgot Huhn
 date: 2024-03-31
+categories: [teaching]
 ---
 
-I recently took a short statistics course as part of my PhD-studies and came across one of my pet-peeves in introductory statistics content. In every intro to stats book or course, one of the objectives is to teach students that *correlation does not imply causation.* Very often this is taught with a graph like this:
+I recently took a short statistics course as part of my PhD-studies and came across one of my pet-peeves in introductory statistics content. In every intro to stats book or course, one of the objectives is to teach students that *correlation does not imply causation.* Very often this is taught with a graph like this:
 
 [![From Tyler Vigens spurious correlation website.](images/tylervigencage.jpg){fig-align="center"}](https://tylervigen.com/spurious/correlation/5837_the-number-of-movies-nicolas-cage-appeared-in_correlates-with_the-number-of-transportation-security-screeners-in-north-dakota)
 
