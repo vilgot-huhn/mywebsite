@@ -10,6 +10,7 @@ website:
         text: Home
       - blog.qmd
       - posts.qmd
+      - projects.qmd
     tools:
       - icon: twitter
         href: https://twitter.com/vilgothuhn

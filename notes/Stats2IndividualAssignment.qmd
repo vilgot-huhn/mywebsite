@@ -1,0 +1,198 @@
+---
+title: "Stats2IndividualAssignment"
+format: html
+date: 2025-03-21
+author: "Vilgot Huhn"
+categories: [Rethinking Statistics]
+execute:
+  freeze: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rethinking)
+```
+
+## My data and model
+
+My data will be self-rated GAD-7 scores from a clinical trial. Patients receive one out of two possible active treatments over ten weeks. I want to use multi-level modeling to model the effect of treatment over time, and compare that between treatments.
+
+The formula is presented below for 20 patients ($j$). My outcome $y$ is GAD-7 score. $time$ will be the week the measurement comes from, ranging from 0 to 9, so that the intercepts $\alpha$ represent model estimations at start of treatment.
+
+$$
+\begin{align*}
+y_i \sim Normal(\mu_i,\sigma) \\
+\mu_{i,j} = \alpha_{patient[i]} \ + \ \beta_{patient[i]}*time_i \\
+\alpha_j \sim Normal(\bar{\alpha},\sigma_a) \ \ ,for \ j = 1,2,...20 \\
+\bar{\alpha} \sim Normal(0,1) \\
+\sigma_a \sim Exponential(1) \\
+\beta_j \sim Normal(\bar{\beta},\sigma_b) \ \ ,for \ j = 1,2,...20 \\
+\bar{\beta} \sim Normal(0,1) \\
+\sigma_b \sim Exponential(1) \\
+\sigma \sim Exponential(1)
+\end{align*}
+$$
+
+I have not figured out how to specify a group effect yet but one cheap solution is to just fit two models and compare. In this case that solution is probably adequate since I don't want the estimate for group A to affect the estimate from group B anyway. However, in time I want to look at contrasts between competing mediators and then it may be better to include group as a factor.
+
+I have a function that generates data in long format from a previous project. Since the data simulates intercepts \~ Normal(0,1), it can be read as if I were to standardize the scores at week 0. With this standardization the `avg_slope` argument times the length of the treatment `nweeks` corresponds to the standardized effect size for growth models following Feingold (2007).
+
+```{r}
+#function that simulates data
+long.data.sim <- function(n = 30, avg_slope = 0.1, slope_intercept_correlation = -0.15, slope_sigma = 0.1, nweeks = 10, error = 0.3){
+  intercepts <- rnorm(n, m = 0, sd = 1)
+  slopes <- avg_slope + (slope_intercept_correlation*intercepts + rnorm(n,m=0,sd=sqrt(1-slope_intercept_correlation^2)) )*slope_sigma
+  weeks <- 0:(nweeks-1)
+  df <- data.frame()
+  for(i in 1:n){
+    err <- rnorm(nweeks, m = 0, sd = error) #will equal residual std.dev. = sigma(mdl)
+    df <- rbind.data.frame(df,data.frame(id=rep(i, times = nweeks),y=intercepts[i]+slopes[i]*weeks+err,weeks))
+  }
+  return(df)
+}
+
+#generate data
+d <- long.data.sim(n = 20, avg_slope = 0.2, slope_intercept_correlation = -0.15, slope_sigma = 0.1, nweeks = 10, error = 0.3)
+
+#Let's also see if it runs if some patients have missing data some weeks (it will)
+d <- d[-sample(1:nrow(d), 15, replace = FALSE),]
+```
+
+I then built the models step by step increasing complexity.
+
+```{r}
+#single level model (with quadratic aproximation)
+mdl_non <- quap(alist(
+  y ~ dnorm(mu,sigma),
+  mu <- a + b*weeks,
+  a ~ dnorm(0,1),
+  b ~ dnorm(0,0.3),
+  sigma ~ dexp(1)
+), data = d)
+precis(mdl_non)
+
+#multi-level model, random intercepts.
+mdl_random_intercept <- ulam(alist(
+  y ~ dnorm(mu,sigma),
+  mu <- a[id] + b*weeks,
+  a[id] ~ dnorm(a_bar,sigma_a),
+  a_bar ~ dnorm(0,1),
+  sigma_a ~ dexp(1),
+  b ~ dnorm(0,0.3),
+  sigma ~ dexp(1)
+), data = d, chains = 4, cores = 4)
+precis(mdl_random_intercept, depth = 2)  #seems to run fine with missing rows.
+precis(mdl_random_intercept) #most relevant parameters
+
+#multi-level model, random intercepts and slopes.
+mdl_random <- ulam(alist(
+  y ~ dnorm(mu,sigma),
+  mu <- a[id] + b[id]*weeks,
+  a[id] ~ dnorm(a_bar,sigma_a),
+  a_bar ~ dnorm(0,1),
+  sigma_a ~ dexp(1),
+  b[id] ~ dnorm(b_bar,sigma_b),
+  b_bar ~ dnorm(0,1),
+  sigma_b ~ dexp(1),
+  sigma ~ dexp(1)
+), data = d, chains = 4, cores = 4)
+precis(mdl_random, depth = 2)
+precis(mdl_random)
+```
+
+The main estimand is the fixed effect, which turn out pretty similar regardless of model in this cleanly simulated data.
+
+### Prior predictive check
+
+Now let's look at those priors I chose.
+
+```{r}
+prior <- extract.prior(mdl_random)
+#20 patients random effects from different draws
+{plot(NULL, xlim = c(0,9), ylim = c(-3,3),
+      ylab = "standardized symptoms", xlab = "weeks", main = "random effects")
+  for(i in 1:20){
+    abline(a = prior$a[i,i], b = prior$b[i,i])
+  }}
+
+#20 draws fixedeffects
+{plot(NULL, xlim = c(0,9), ylim = c(-3,3),
+      ylab = "standardized symptoms", xlab = "weeks", main = "fixed effects")
+  for(i in 1:20){
+    abline(a = prior$a_bar[i], b = prior$b_bar[i])
+  }}
+```
+We can see that the priors I choose result in highly implausible effects, especially as it pertains to slopes. Let's try to limit the variability in slopes by constraining the prior for $\bar{b}$ to 0.15.
+
+```{r}
+mdl_random_new <- ulam(alist(
+  y ~ dnorm(mu,sigma),
+  mu <- a[id] + b[id]*weeks,
+  a[id] ~ dnorm(a_bar,sigma_a),
+  a_bar ~ dnorm(0,1),
+  sigma_a ~ dexp(1.5),
+  b[id] ~ dnorm(b_bar,sigma_b),
+  b_bar ~ dnorm(0,0.15),
+  sigma_b ~ dexp(1),
+  sigma ~ dexp(1)
+), data = d, chains = 4, cores = 4)
+prior <- extract.prior(mdl_random_new)
+
+#20 patients random effects from different draws
+{plot(NULL, xlim = c(0,9), ylim = c(-3,3),
+      ylab = "standardized symptoms", xlab = "weeks", main = "random effects")
+  for(i in 1:20){
+    abline(a = prior$a[i,i], b = prior$b[i,i])
+  }}
+
+#20 draws fixed effects
+{plot(NULL, xlim = c(0,9), ylim = c(-3,3),
+      ylab = "standardized symptoms", xlab = "weeks", main = "fixed effects")
+  for(i in 1:20){
+    abline(a = prior$a_bar[i], b = prior$b_bar[i])
+  }}
+
+```
+
+**Comment:** Fixed effects now look more reasonable. Random/variable effects still vary a lot because even though their mean is constrained, their variability $\sigma_b$ is still large $\mathbb{E}[Exponential(1)] = 1$, which turns into a lot of variability if we recall this is per week change. Still, this shouldn't matter too much when fitting the model since the exponential function with a rate of 1 has quite a lot of probability mass close to 0 anyway. Similarly $\sigma_a$ could probably be more narrow.
+
+
+## Extra: Model with slope-intercept correlation
+
+Here I attempt a model with a slope-intercept correlation for the varying effects.
+
+$$
+\begin{align}
+y_i \sim Normal(\mu_i,\sigma) \\
+\mu_{i,j} = \alpha_{patient[i]} \ + \ \beta_{patient[i]}*time_i \\
+\bigl[ \substack{\alpha_j \\ \beta_j} \bigr] \sim MVNormal(\bigl[ \substack{\alpha \\ \beta} \bigr], S) \\
+S = \begin{pmatrix} 0 & \sigma_a \\ \sigma_b & 0 \end{pmatrix} R \begin{pmatrix} 0 & \sigma_a \\ \sigma_b & 0 \end{pmatrix}\\
+\alpha \sim Normal(0,1) \\
+\beta \sim Normal(0,1) \\
+\sigma_a \sim Exponential(1) \\
+\sigma_b \sim Exponential(1) \\
+\sigma \sim Exponential(1) \\
+R \sim LKJcorr(1.5)
+\end{align}
+$$
+```{r}
+mdl_random_correlated <- ulam(alist(
+  y ~ dnorm(mu,sigma),
+  mu <- a_id[id] + b_id[id]*weeks,
+  c(a_id,b_id)[id] ~ multi_normal(c(a,b), Rho, sigma_a), #for some reason I can only specify one sigma here. c(sigma_a, sigma_b) does not work... It treats sigma_a as a repeated vector. Annoying since the priors for sigma_a and sigma_b have quite different implications.
+  a ~ dnorm(0,1),
+  sigma_a ~ dexp(1),
+  b ~ dnorm(0,1),
+  sigma ~ dexp(1),
+  Rho ~ lkj_corr(1.5)
+), data = d, chains = 4, cores = 4)
+```
+I get a lot of warnings. However I interpret the warning *"If this warning occurs sporadically, such as for highly constrained variable types like covariance matrices, then the sampler is fine"* as an indication that this problem is pretty expected here. Looking at `precis()` below the `rhat`s seem fine.
+
+```{r}
+precis(mdl_random_correlated, depth = 3) 
+post <- extract.samples(mdl_random_correlated)
+mean(post$Rho[,1,2]) #should be close-ish to -0.15, but the variable has a lot of simulation variance in smaller samples.
+```
+
+

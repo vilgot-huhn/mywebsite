@@ -1,5 +1,11 @@
 [
   {
+    "listing": "/projects.html",
+    "items": [
+      "/notes/Stats2IndividualAssignment.html"
+    ]
+  },
+  {
     "listing": "/posts.html",
     "items": [
       "/posts/20250417_First_Blogpost/index.html",
