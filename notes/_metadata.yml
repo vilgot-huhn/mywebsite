@@ -1,0 +1,5 @@
+toc: true
+toc-location: left
+toc-depth: 3
+execute:
+  freeze: true
