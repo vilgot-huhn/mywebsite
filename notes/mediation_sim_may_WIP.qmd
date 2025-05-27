@@ -8,7 +8,6 @@ execute:
   freeze: true
 ---
 
-
 ```{r setup, include=FALSE}
 #library(lme4)
 library(ggplot2)
@@ -158,8 +157,7 @@ m_i &\sim N(\mu_{m,i}, \sigma_m) \\
 \end{align}
 $$
 
-A lot of things have happened in this step. Our alphas and betas now have subscripts that both relate them to either the outcome or the mediator. We've also added a $\gamma_j$ which describe the effect of the mediator. **Note** that this now assumes a constant mediator-outcome relationship for each participant $j$. **Note** Not centering the parameter meant it basically pushed y values further from zero. Now while centered it instead represents some sort of average slope of the mediator (balancing on an axis in the middle of the dataset...)
-Constant in the sense that it doesn't vary over time; the relationship is however allowed to vary by participant.
+A lot of things have happened in this step. Our alphas and betas now have subscripts that both relate them to either the outcome or the mediator. We've also added a $\gamma_j$ which describe the effect of the mediator. **Note** that this now assumes a constant mediator-outcome relationship for each participant $j$. **Note** Not centering the parameter meant it basically pushed y values further from zero. Now while centered it instead represents some sort of average slope of the mediator (balancing on an axis in the middle of the dataset...) Constant in the sense that it doesn't vary over time; the relationship is however allowed to vary by participant.
 
 Importantly we now have a joint covariance matrix $\Sigma$ that structures the multivariate normal distribution which all individual level parameters are drawn from.
 
@@ -311,7 +309,6 @@ p <- ggplot(df, aes(x = week, group = as.factor(id), color = as.factor(id))) + g
 
 print(p)
 ```
-
 
 ### Appendix: Maximal model including correlated residuals.
 

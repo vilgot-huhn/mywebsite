@@ -1,0 +1,343 @@
+---
+title: "Stats2_seminar_2"
+format: html
+date: 2025-02-21
+author: "Vilgot Huhn"
+categories: [Rethinking Statistics]
+execute:
+  freeze: true
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+## MN3
+
+You test an individual M’s ability to solve a certain class of logical
+problems. M gave answers to nine versions of the problem and you coded
+each as correct (1) or incorrect (0). This is the data:
+
+1, 0, 0, 0, 0, 1, 0, 0, 0
+
+You want to estimate M’s true ability ( p ) using this model: $$
+\begin{align}
+y_i &\sim Bernoulli(p) \\
+p &\sim Uniform(0,1) \\
+\end{align}
+$$
+
+1.  List the critical assumptions of this model.
+2.  Use grid approximation to derive point estimate and 95 %
+    Compatibility Interval (CI, defined as a highest density interval).
+3.  Verify that you obtain the same result using the binomial
+    distribution with $n = 9$, that is, equal to the number of trials
+    (this is McElreath’s approach to his globe tossing data).
+
+*Answer* Uniform prior. Independent successes. $p$ is constant (all
+trials are equally hard).
+
+```{r}
+library(Rlab)
+p_grid <- seq(from = 0, to = 1, length.out = 1000)
+prior <- rep(1, times = 1000) #we can also use dbeta(p_grid,1,1)
+likelihood <- dbinom(2, size = 9, prob = p_grid)#dbern(c(1, 0, 0, 0, 0, 1, 0, 0, 0),prob = p_grid)
+posterior <- likelihood * prior
+plot(p_grid,posterior, type = "l"); abline(v = which.max(posterior)/1000)
+d <- data.frame(
+  posterior,
+  p_grid,
+  posterior_90 = posterior > quantile(posterior, 0.1)
+)
+d[min(which(d$posterior_90 == TRUE)),]$p_grid #THERE WE GO YES
+d[max(which(d$posterior_90 == TRUE)),]$p_grid #HAHA YES!
+library(ggplot2)
+ggplot(d, aes(x = p_grid, y = posterior, color = posterior_90)) +
+  geom_point(size = 0.02, alpha = 0.5) #ugly
+```
+
+I don't know how to compute HPDI from grid really... I guess you could
+use `quantile()` and then select based on that. **I work it out**
+
+# Exercises attempt
+
+## SR2m1
+
+Recall the globe tossing model from the chapter. Compute and plot the
+grid approximate posterior distribution for each of the following sets
+of observations. In each case, assume a uniform prior for *p*. (1) W,W,W
+(2) W,W,W,L (3) L,W,W,L,W,W,W
+
+Let's try to trecreate the grid approximation method as a challenge:
+
+```{r}
+g <- 20 #for granularity
+#A
+prior <- rep(1, times = g)
+grid <- seq(from = 0, to = 1, length.out = g)
+likelihood <- dbinom(3, size = 3, prob = grid)
+posterior_unstandardized <- prior*likelihood
+posterior <- posterior_unstandardized / sum(posterior_unstandardized) #normalize
+plot(grid,posterior, type = "l", main = "W,W,W")
+
+#B
+prior <- rep(1, times = g)
+grid <- seq(from = 0, to = 1, length.out = g)
+likelihood <- dbinom(3, size = 4, prob = grid)
+posterior_unstandardized <- prior*likelihood
+posterior <- posterior_unstandardized / sum(posterior_unstandardized) #normalize
+plot(grid,posterior, type = "l", main = "W,W,W,L")
+
+#C
+prior <- rep(1, times = g)
+grid <- seq(from = 0, to = 1, length.out = g)
+likelihood <- dbinom(5, size = 7, prob = grid)
+posterior_unstandardized <- prior*likelihood
+posterior <- posterior_unstandardized / sum(posterior_unstandardized) #normalize
+plot(grid,posterior, type = "l", main = "L,W,W,L,W,W,W")
+```
+
+## SR2m2
+
+Now assume a prior for p that is equal to zero when p \< 0.5 and is a
+positive constant when *p* ≥ 0.5. Again compute and plot the grid
+approximate posterior distribution for each of the sets of observations
+in the problem just above.
+
+```{r}
+g <- 100
+grid <- seq(from = 0, to = 1, length.out = g)
+prior <- (grid < 0.5) == FALSE #actually should be *2 to be a proper pdf
+
+likelihood <- dbinom(3, size = 3, prob = grid)
+posterior_unstandardized <- prior*likelihood
+posterior <- posterior_unstandardized / sum(posterior_unstandardized) #normalize
+plot(grid,posterior, type = "l", main = "W,W,W")
+
+likelihood <- dbinom(3, size = 4, prob = grid)
+posterior_unstandardized <- prior*likelihood
+posterior <- posterior_unstandardized / sum(posterior_unstandardized) #normalize
+plot(grid,posterior, type = "l", main = "W,W,W,L")
+
+likelihood <- dbinom(5, size = 7, prob = grid)
+posterior_unstandardized <- prior*likelihood
+posterior <- posterior_unstandardized / sum(posterior_unstandardized) #normalize
+plot(grid,posterior, type = "l", main = "L,W,W,L,W,W,W")
+
+
+```
+
+## SR3e3
+
+How much posterior probability lies between p = 0.2 and p = 0.8?
+
+```{r}
+p_grid <- seq( from=0 , to=1 , length.out=1000 )
+ prior <- rep( 1 , 1000 )
+ likelihood <- dbinom( 6 , size=9 , prob=p_grid )
+ posterior <- likelihood * prior
+ posterior <- posterior / sum(posterior)
+ set.seed(100)
+ samples <- sample( p_grid , prob=posterior , size=1e4 , replace=TRUE )
+ 
+length(samples[samples < 0.2 | samples < 0.8])/10000 #mean() works too.
+#To get the exact distribution. Use the beta-function and math it.
+ 
+ 
+```
+
+## SR3e4
+
+20% of the posterior probability lies below which value of *p*?
+
+```{r}
+sort(samples)[2000] 
+plot(sort(samples)[1:2000],seq(from = 0, to = 0.2, length.out = 2000))
+library(rethinking)
+dens(samples)
+#hist(sort(samples)[2000], breaks = 1000) #don't really get why this doesn't work...
+```
+
+## SR3e6
+
+Which values of p contain the narrowest interval equal to 66% of the
+posterior probability?
+
+```{r}
+rethinking::HPDI(samples, 0.66)
+```
+
+## 3M6.
+
+Suppose you want to estimate the Earth’s proportion of water very
+precisely. Specifically, you want the 99% percentile interval of the
+posterior distribution of p to be only 0.05 wide. This means the
+distance between the upper and lower bound of the interval should be
+0.05. How many times will you have to toss the globe to do this?
+
+*First guess* There should be some variance in the n required depending
+on how your draws end up, right? In simulation this would be "simulation
+variance" while in sampling it would be sampling variance. My guess is
+that this should turn out quite similar to normal standard errors, since
+we have a flat prior. If $\hat{p}$ is the true proportion and $x$ is the
+proportion we find in our sample of $n$ individuals, the standard error
+is $SE=\sqrt{\hat{p}(1-\hat{p})/n}$, we can see here that
+$\hat{p}(1-\hat{p})$, meaning that the required $n$ should vary
+depending on what $\hat{p}$ is.
+
+```{r, echo = FALSE}
+curve(x * (1 - x), from = 0, to = 1, xlab = "p", ylab = "p(1 - p)", main = "Plot of p(1 - p)")
+```
+
+This sort of makes sense if we think of a small sample and very high
+proportion. Three "W,W,W" would all make the distribution only thinner
+(taller peak), while then adding a "L" would both make it some mix of
+taller and wider. Visually at least this feels true to me...
+
+Anyways, to solve for a given $\hat{p}$ we just need to plug in numbers
+to the equation and solve for $n$. So for example for $\hat{p}=0.4$: $$
+\begin{align}
+0.05&=2.57*\sqrt{{0.4}(1-{0.4})/n} \\ 
+0.05&=2.57*\sqrt{0.24/n} \\ 
+0.05^2&=2.57^2*\sqrt{0.24/n}^2 \\ 
+0.0025&=6.6049*0.24/n \\ 
+0.0025&=1.585176/n \\ 
+0.0025n&=1.585176 \\ 
+n&=1.585176/0.0025 \\
+n &\approx 634?
+\end{align}
+$$
+
+2.57 is $\approx$ the z-score in a normal distribution, so we're using
+it to get from SE to CI, which may be questionable in this case since
+with high or low proportions the CI may exceed 1. We can find exact
+number with ´qnorm(0.995)´. We're assuming our error is normal.
+
+Also 99% percentile intervals may be pretty different from 99%CI.
+
+Also, as shown in the graph above, this equation may turn out quite
+different for more skewed proportions. Also: I'm not that sure I've
+gotten the simple middle school algebra right.
+
+*Second attempt*
+
+Let's try to code the problem with a loop instead:
+
+```{r, echo = FALSE}
+plausibility <- list(
+  n = 0,
+  positive_outcomes = 0,
+  grid = seq(from = 0, to = 1, length.out = 1000),
+  prior = rep(1/1000, times = 1000)
+)
+
+#Claudes suggestion after I identified the problem:
+update_one_throw <- function(plausibility, p){
+  plausibility$n <- plausibility$n + 1
+  outcome <- rbinom(1, 1, prob = p)
+  plausibility$positive_outcomes <- plausibility$positive_outcomes + outcome
+  
+  # Calculate likelihood just for this new observation
+  likelihood <- dbinom(outcome, size = 1, prob = plausibility$grid)
+  
+  posterior <- plausibility$prior * likelihood
+  plausibility$prior <- posterior/sum(posterior)
+  return(plausibility)
+}
+
+
+#reset before running!
+plausibility <- list(
+  n = 0,
+  positive_outcomes = 0,
+  grid = seq(from = 0, to = 1, length.out = 1000),
+  prior = rep(1/1000, times = 1000)
+)
+
+plausibility <- update_one_throw(plausibility = plausibility, p = 0.6)
+#Now let's loop that
+distance <- 1
+sum_posterior_up <- 0
+i_up <- 0
+sum_posterior_d <- 0
+i_d <- 0
+while(distance > 0.05){
+  plausibility <- update_one_throw(plausibility = plausibility, p = 0.5)
+  sum_posterior_up <- 0
+  i_up <- 0
+  sum_posterior_d <- 0
+  i_d <- 0
+  while(sum_posterior_up <= 0.995){
+    i_up <- i_up+1
+    sum_posterior_up <- sum(plausibility$prior[1:i_up])
+  }
+  while(sum_posterior_d <= 0.005){
+    i_d <- i_d+1
+    sum_posterior_d <- sum(plausibility$prior[1:i_d])
+  }
+  distance <- (i_up/1000) - (i_d/1000)
+}
+#distance #check
+plot(plausibility$grid, plausibility$prior, main = paste0("n=",plausibility$n,"  p=",round(plausibility$positive_outcome/plausibility$n,2)), type = "l");
+abline(v = i_up/1000); abline(v = i_d/1000)
+which.max(plausibility$prior)/1000
+
+```
+
+However it's different if *p* is very skewed.
+
+```{r, echo = FALSE}
+
+## Now let's instead try a weirdly skewed one.
+plausibility <- list(
+  n = 0,
+  positive_outcomes = 0,
+  grid = seq(from = 0, to = 1, length.out = 1000),
+  prior = rep(1/1000, times = 1000)
+)
+
+plausibility <- update_one_throw(plausibility = plausibility, p = 0.98)
+#Now let's loop that
+distance <- 1
+sum_posterior_up <- 0
+i_up <- 0
+sum_posterior_d <- 0
+i_d <- 0
+while(distance > 0.05){
+  plausibility <- update_one_throw(plausibility = plausibility, p = 0.98)
+  sum_posterior_up <- 0
+  i_up <- 0
+  sum_posterior_d <- 0
+  i_d <- 0
+  while(sum_posterior_up <= 0.995){
+    i_up <- i_up+1
+    sum_posterior_up <- sum(plausibility$prior[1:i_up])
+  }
+  while(sum_posterior_d <= 0.005){
+    i_d <- i_d+1
+    sum_posterior_d <- sum(plausibility$prior[1:i_d])
+  }
+  distance <- (i_up/1000) - (i_d/1000)
+}
+distance #check!
+plot(plausibility$grid, plausibility$prior, main = paste0("n=",plausibility$n,"  p=",round(plausibility$positive_outcome/plausibility$n,2)), type = "l");
+abline(v = i_up/1000); abline(v = i_d/1000)
+which.max(plausibility$prior)/1000
+#As expected the skewed one require less
+
+
+```
+
+Notably it also turns out quite different than my questionable algebraic
+solution.
+
+**Also:** Turns out there's a function in `rethinking` that does this.
+`PI(x,prob)` if I use samples.
+
+```{r}
+samp <- sample(plausibility$grid, size = 1000, prob = plausibility$prior, replace = TRUE)
+rethinking::PI(samp, prob = 0.99)
+```
+
+# BTW Look at the gif I made!
+
+![](images/binom_1.gif){fig-align="center" width="521"}

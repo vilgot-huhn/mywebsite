@@ -21,15 +21,15 @@ The formula is presented below for 20 patients ($j$). My outcome $y$ is GAD-7 sc
 
 $$
 \begin{align*}
-y_i \sim Normal(\mu_i,\sigma) \\
-\mu_{i,j} = \alpha_{patient[i]} \ + \ \beta_{patient[i]}*time_i \\
-\alpha_j \sim Normal(\bar{\alpha},\sigma_a) \ \ ,for \ j = 1,2,...20 \\
-\bar{\alpha} \sim Normal(0,1) \\
-\sigma_a \sim Exponential(1) \\
-\beta_j \sim Normal(\bar{\beta},\sigma_b) \ \ ,for \ j = 1,2,...20 \\
-\bar{\beta} \sim Normal(0,1) \\
-\sigma_b \sim Exponential(1) \\
-\sigma \sim Exponential(1)
+y_i &\sim Normal(\mu_i,\sigma) \\
+\mu_{i,j} &= \alpha_{patient[i]} \ + \ \beta_{patient[i]}*time_i \\
+\alpha_j &\sim Normal(\bar{\alpha},\sigma_a) \ \ ,for \ j = 1,2,...20 \\
+\bar{\alpha} &\sim Normal(0,1) \\
+\sigma_a &\sim Exponential(1) \\
+\beta_j &\sim Normal(\bar{\beta},\sigma_b) \ \ ,for \ j = 1,2,...20 \\
+\bar{\beta} &\sim Normal(0,1) \\
+\sigma_b &\sim Exponential(1) \\
+\sigma &\sim Exponential(1)
 \end{align*}
 $$
 

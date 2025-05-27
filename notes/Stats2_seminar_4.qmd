@@ -1,0 +1,221 @@
+---
+title: "Stats2_seminar_4"
+format: html
+date: 2025-02-23
+author: "Vilgot Huhn"
+categories: [Rethinking Statistics]
+execute:
+  freeze: true
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rethinking)
+```
+
+## MN4a
+Use McElreath’s dataset Howell2 restricted to adults (age > 18). Fit two linear models using quadratic approximation, quap():
+
+1. Weight as outcome, with two predictors: sex as an indicator variable and age as a continuous variable.
+2. As above, but allow for a curvilinear effect of age, by adding age-squared to the model. Center the age variable around its mean.
+
+For the first model, motivate priors based on a prior predictive simulation (cf. Fig. 4.5 of the Book). Then fit the model and report regression coefficients with compatibility intervals, and illustrate model predictions in a plot of the data (weight as a function of non-centered age) with separate prediction lines for women and men. Include compatibility regions around fitted lines (e.g., as in Fig. 5.1 of the book) or add samples of fitted lines (e.g., as in Fig. 4.7).
+
+```{r}
+data("Howell1")
+d <- Howell1
+d <- d[d$age > 18,]
+xbar <- mean(d$age)
+d$sex <- ifelse(d$male == 1, 2,1)
+
+#1. first model, adding age and sex
+mdl1 <- quap(
+  alist(
+    weight ~ dnorm(mu,sigma),
+    mu <- a[sex] + beta_age*(age-xbar),
+    a[sex] ~ dnorm(178,20), #this is a common prior. With dummy variables parametrised we could two priors instead.
+    beta_age ~ dnorm(0,1),
+    sigma ~ dexp(1)
+  ), data = d
+)
+precis(mdl1, depth = 2)
+#plot it
+coffs <- precis(mdl1, depth = 2)[,1]
+{plot(weight ~ age, data = d)
+curve(from = -30, to = 90, coffs[1] + coffs[3]*(x-xbar), add = TRUE)
+curve(from = -30, to = 90, coffs[2] + coffs[3]*(x-xbar), add = TRUE)}
+
+
+```
+
+*Comment from the seminar: When we use dummy coding that means we compound uncertainty, because while female height has one prior, male height is the combination of two priors*
+
+2. As above, but allow for a curvilinear effect of age, by adding age-squared to the model. Center the age variable around its mean.
+
+
+```{r}
+#2. add non-linear efffect
+d <- Howell1
+d <- d[d$age > 18,]
+xbar <- mean(d$age)
+d$age <- d$age - mean(d$age)
+d$sex <- ifelse(d$male == 1, 2,1)
+mdl2 <- quap(
+  alist(
+    weight ~ dnorm(mu,sigma),
+    mu <- a[sex] + beta_age_1*age + beta_age_2*(age^2),
+    a[sex] ~ dnorm(178,20),
+    beta_age_1 ~ dnorm(0,2),
+    beta_age_2 ~ dnorm(0,2),
+    sigma ~ dexp(1)
+  ), data = d
+)
+precis(mdl2, depth = 2)
+#plot it
+mu_women <- sim(mdl2, data=list(age=c(-25:50), sex=rep(1, 76)))
+mu_women_pi <- apply(mu_women, 2, PI, prob = 0.95)
+mu_men <- sim(mdl2, data=list(age=c(-25:50), sex=rep(2, 76)))
+mu_men_pi <- apply(mu_men, 2, PI, prob = 0.95)
+#plot it
+coffs <- precis(mdl2, depth = 2)[,1]
+{plot(weight ~ age, data = d, xlab = "difference from mean age")
+  curve(from = -30, to = 90, coffs[1] + coffs[3]*x + coffs[4]*(x^2), add = TRUE)
+  curve(from = -30, to = 90, coffs[2] + coffs[3]*x + coffs[4]*(x^2), add = TRUE)
+  shade(mu_women_pi, -25:50, col=col.alpha("red", 0.15))
+  shade(mu_men_pi, -25:50, col=col.alpha("blue", 0.15))}
+
+```
+
+
+
+
+For the first model, motivate priors based on a prior predictive simulation (cf. Fig. 4.5 of the Book). Then fit the model and report regression coefficients with compatibility intervals, and illustrate model predictions in a plot of the data (weight as a function of non-centered age) with separate prediction lines for women and men. Include compatibility regions around fitted lines (e.g., as in Fig. 5.1 of the book) or add samples of fitted lines (e.g., as in Fig. 4.7).
+
+*Did not figure out how to connect extract.prior() with link() here...*
+
+```{r}
+data("Howell1")
+d <- Howell1
+d <- d[d$age > 18,]
+xbar <- mean(d$age)
+d$sex <- ifelse(d$male == 1, 2,1)
+
+mdl1 <- quap(
+  alist(
+    weight ~ dnorm(mu,sigma),
+    mu <- a + beta_age*(age-xbar),
+    a ~ dnorm(178,20),
+    beta_age ~ dnorm(0,1),
+    sigma ~ dexp(1)
+  ), data = d
+)
+prior <- extract.prior(mdl1)
+{plot(NULL,xlim=c(18,90),ylim=c(0,300))
+for (i in 1:50) abline(a = prior$a[i], b = prior$beta_age[i])}
+
+```
+
+As we can see, we should center age.
+
+Do the same for the second model.
+
+```{r}
+d <- Howell1
+d <- d[d$age > 18,]
+xbar <- mean(d$age)
+d$age <- d$age - mean(d$age)
+d$sex <- ifelse(d$male == 1, 2,1)
+mdl2 <- quap(
+  alist(
+    weight ~ dnorm(mu,sigma),
+    mu <- a[sex] + beta_age_1*age + beta_age_2*(age^2),
+    a[sex] ~ dnorm(178,20),
+    beta_age_1 ~ dnorm(0,2),
+    beta_age_2 ~ dnorm(0,2),
+    sigma ~ dexp(1)
+  ), data = d
+)
+prior <- extract.prior(mdl2)
+{plot(NULL,xlim=c(18,90),ylim=c(0,300))
+for (i in 1:100) curve(from = 18, to = 90, prior$a[i] + prior$beta_age_1[i]*x + prior$beta_age_2[i]*(x^2), add = TRUE )} #brakets!!
+
+
+```
+
+
+
+
+## SR5E1 Which of the linear models below are multiple linear regressions?
+
+$$
+\begin{align}
+μ_i=α+βx_i \\
+μ_i=β_x x_i+β_z z_i \\
+μ_i=α+β(x_i−z_i) \\
+μ_i=α+β_x x_i+β_z z_i
+\end{align}
+$$
+
+I'd say 2 and 4. I don't know what 3 is. Looks cursed. The result though, seems to be a simple linear regression on a new variable computed from the pairs. The second one doesn't have an intercept, which is often dumb but can be justified under some circumstances.
+
+## SR5E2
+
+Write down a multiple regression to evaluate the claim: “Animal diversity is linearly related to latitude, but only after controlling for plant diversity”. You just need to write down the model definition. 
+
+*Answer:*
+So linearly related after controlling for plant diversity. I'd assume then that plant diversity is a cause we should control for. If we make a DAG, plant diversity can't "cause" latitude. Here $A$ stands for animal diversity. $L$ stands for latitude. $P$ stands for plant diversity.
+
+L --> A
+
+L --> P --> A
+
+If we control for P we block that path into A, estimating only the direct path from L to A. Maybe like that?
+
+**Formula:**
+$$
+\begin{align}
+A_i \sim Normal(\mu_i, \sigma) \\
+\mu_i = \alpha + \beta_L L_i + \beta_P P_i\\
+\alpha \sim Normal(0,0.2)\\
+\beta_{L} \sim Normal(0,1) \\
+\beta_{P} \sim Normal(0,1) \\
+\sigma \sim Uniform(0,6)
+\end{align}
+$$
+
+## 5E3
+Write down a multiple regression to evaluate the claim: Neither amount of funding nor size of laboratory is by itself a good predictor of time to PhD degree; but together these variables are both positively associated with time to degree. Write down the model definition and indicate which side of zero each slope parameter should be on.
+
+**Answer:**
+$F$ is amount of funding. $L$ is laboratory size. $T$ is time to degree.
+I assume we need many regressions to evaluate the claim?
+
+Laboratory size by itself:
+$$
+\begin{align}
+T_i \sim Normal(\mu_i, \sigma) \\
+\mu_i = \alpha + \beta_1 L_i \\
+...priors...
+\end{align}
+$$
+
+Funding by itself:
+$$
+\begin{align}
+T_i \sim Normal(\mu_i, \sigma) \\
+\mu_i = \alpha + \beta_2 F_i \\
+...priors...
+\end{align}
+$$
+
+Combined:
+$$
+\begin{align}
+T_i \sim Normal(\mu_i, \sigma) \\
+\mu_i = \alpha + \beta_1 L_i + \beta_2 F_i \\
+...priors...
+\end{align}
+$$
