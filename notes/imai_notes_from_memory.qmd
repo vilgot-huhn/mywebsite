@@ -1,0 +1,176 @@
+---
+title: "Imai et al. (notes, mostly from memory)"
+format: html
+date: 2025-08-28
+author: "Vilgot Huhn"
+categories: [Mediation]
+execute:
+  freeze: true
+---
+
+
+```{r, echo = FALSE}
+library(mediation)
+```
+
+## Potential outcomes method for mediation
+
+The potential outcomes method seems (?) equivalent to the causal mediation method.
+
+It is based around fitting two models and comparing parameters. Three effects are of interest, the total effect, the direct effect, and the causal mediated effect. The parameters of interest will all be averages (Imai 2011 calls it the ATE, ADE, and ACME).
+
+In an observational context there are four assumptions that needs to be met (conventional *exogeneity* assumptions) for this estimation procedure to be valid.
+
+1.  No exposure (X) outcome (Y) confounding.
+
+2.  No exposure (X) mediator (M) confounding.
+
+3.  No mediator (M) outcome (Y) confounding.
+
+4.  No exposure-mediator interaction.
+
+5.  No mediator-outcome confounders affected by the exposure. *I don't fully understand this one.*
+
+### How does/doesn't randomization help
+
+Randomization deals with any outside influence on the exposure X, so common causes for X&M and X&Y are dealt with. I.e. we no longer have to worry about assumption 1 and 2. *I think assumption 5 should also be dealt with.*
+
+### Old-school method
+
+Baron & Kenny (1986, or something) has been the go-to method for estimating a mediation. The size of the mediated effect are estimated through what's called the "product method". Two models are fit, and three paths are estimated. First a model is fit for the exposure-mediator relationship.
+
+$$
+M_i=\beta_0+\beta_1x_i+\epsilon_i
+$$
+
+So if x is a randomized treatment dummy variable (0,1) we get a prediction of how much being in the treatment group increases M, *on average*.
+
+Then an additional model is fit containing both the exposure and the mediator.
+
+$$
+Y_i=\gamma_0+\gamma_1x_i+\gamma_2m_i+\epsilon_{i}
+$$
+
+Here our $\gamma_1$ is the estimate of the treatment effect (exposure) when conditioning on the mediator, and vice versa, $\gamma_2$ is the effect of the mediator when conditioning on the exposure. $\gamma_1$ is also referred to as $c'$, the direct effect (the effect of X on Y that does not travel through the mediator).
+
+To get an estimate of the indirect effect, the mediated effect, we take $\beta_1\gamma_2$. In other words the effect of the exposure on the outcome times the conditional effect of the mediator on the outcome.
+
+Let's do a simulation.
+
+```{r}
+#fully mediated effect
+n <- 200
+X <- rep(c(0,1), length.out = n)
+M <- rnorm(n,X,1)
+Y <- rnorm(n,M,1)
+
+#fit first linear model
+mdl.m <- lm(M ~ X)
+summary(mdl.m) #beta_1 should be close to 1.
+
+#fit second linear model
+mdl.y <- lm(Y ~ X + M)
+summary(mdl.y) #conditional effect gamma_2 should be close to 1
+```
+
+Here the code simulates a situation where there is no direct effect. The estimate for `X` from `mdl.y` should thus be close to zero, likely non-significant. The conditional effect of M on Y when controlling for X should be close to 1. In the first model the estimate for X on M should be close to 1 too. Now let's consider what's happening here. Half of our datapoints are getting treatment X, those who get that treatment are 1 SD higher on M, and those who are 1 SD higher on M are also 1 SD higher on Y when controlling for X. The indirect effect here can be estimated by taking the product, but it could also be indirectly estimated by taking the difference between the total effect, `lm(Y ~ X)`, and the direct effect. Often that contrast/difference is our estimand.
+
+Let's consider the product method with less strong effects.
+
+```{r}
+n <- 2000
+X <- rep(c(0,1), length.out = n)
+beta_1 <- 0.4
+M <- rnorm(n, beta_1*X ,1)
+gamma_2 <- 0.5
+Y <- rnorm(n, gamma_2*M, 1)
+
+#fit first linear model
+mdl.m <- lm(M ~ X)
+summary(mdl.m) #beta_1 should be close to 1.
+
+#fit second linear model
+mdl.y <- lm(Y ~ X + M)
+summary(mdl.y)
+
+coef(mdl.m)[2]*coef(mdl.y)[3]
+```
+
+Getting the treatment now increases the mediator M by 0.4, on average. The mediator then affects the outcome by 0.5 per unit, controlling for an eventual direct treatment effect (that we don't have in the data generating process). Thus the indirect effect is 0.5 times 0.4 \~= 0.2.
+
+### How does the classical approach contrast with the potential outcomes approach?
+
+The potential outcomes approach is instead based on counterfactuals. I find this quite conceptually confusing, but the gist of it is that the framework asks us to imagine we could time-travel and, for each individual, see what would have happened if we had switched the randomization (or set their mediator to a specified level). The confusing part is that this is impossible, but perhaps it's valuable to remember that this is indeed *what we wish we could do*.[^1]
+
+[^1]: On the other hand it is also valuable to remember you can never go back. No matter how much your heart breaks. You can never go back.
+
+Imai et al (2011) introduces a notation for potential outcomes that may be useful. $Y_i(1)$ is the "potential" outcome if a patient $i$ receives a treatment (if it's dummy coded) and $Y_i(0)$ is the potential outcome if they didn't. Truly "causal" effects then are given by the contrast at the "unit level" $Y_i(1)-Y_i(0)$. This can never really be known without time-travel, but supposedly there's something gained by remembering that really, this is the question we're actually interested in. With randomization an Average Treatment Effect (ATE) can be estimated since the probability of receiving the treatment is independent of the outcome $\{ Y_i(1),Y_i(0) \} \perp T_i$.
+
+An even more clear notation could probably be $Y_i(t=0,m=0)$? But I don't make the rules (I think there are alternative notation styles though).
+
+However when there's no randomization we have to settle on the goal that the level of the exposure/treatment is "as if" randomized if we control for the right pre-treatment covariates. This is the first assumption of the *sequential ignorability* assumption. "treatment assignment is assumed to be ignorable", also called exogeneity assumption, no omitted variable bias. The second assumption is more tricky. Even if we were to randomize the mediator, this would not satisfy sequential ignorability. It is sequential because "once" we've conditioned on a set of covariates, that renders the treatment/exposure ignorable, "as if randomized", the mediator is ignorable (statistically independent of potential outcomes).
+
+The mathy way to express the sequential ignorability assumption is:
+
+$$
+\{ Y_i(t',m),M_i(t) \} \perp T_i |X_i=x \\
+Y_i(t',m) \perp M_i(t) | T_i = t,  X_i=x
+$$
+
+Imai actually doesn't explain in the paper what prim means here, but Claude suggested it was the counterfactual. Thus, reading it out we have line one: Let's we have an individual who recieved treatment t, $T_i=t$ ,then $t'$ is their counter factual. The individual's outcome on Y given the treatment they didn't receive and the mediator, together with the individual outcome on the mediator for the treatment they actually did recieve, are assumed to both be "jointly" independent of the treatment, given we control for the right covariates. A confusing part here is the mediator level $m$. This does not refer to the outcome on the mediator given a treatment, that's $M_i(t)$, instead it's an arbitrary mediator level, not necessarily the one that would result from treatment.[^2] In other words we imagine we could manipulate both the treatment and the mediator. $m'$ is then just another arbitrary mediator level.
+
+[^2]: Even with the powers of time travel fully picking apart the potential outcomes framework is difficult.
+
+In addition to this, the potential outcome should also be independent of the potential mediator value, given the treatment and these super nice well chosen covariates.
+
+I guess...
+
+The implication of this where I managed to follow along with is that even if we could somehow randomize both the treatment and the mediator, what we're actually after is the conditional effect. I.e. the mediated effect should not be mixed up with the effect of the mediator.
+
+Anyway, the best thing we can do for observational data, including randomized experiments, is to address confounding with sensitivity analysis. Se code below from <https://imai.fas.harvard.edu/research/files/mediationR2.pdf>
+
+The tricky thing to interpret is the sensitivity parameter $\rho$ which describes the correlation between the error terms of the two models being compared. In other words, it seems like it's a measure of total confounding. In a randomized scenario where the only[^3] possible source of "residual confounding" is mediator-outcome confounding[^4], it could probably be interpreted as that (right?). In an observational context it's harder to interpret. Full quote in footnote[^5]
+
+[^3]: "only"
+
+[^4]: I may be wrong about this and $\rho$ actually specifically relates to mediator-outcome confounding even in non randomized contexts, I'm not sure.
+
+[^5]: "Here, we focus on the outcomewhere subjects stated whether immigration shouldbe decreased or increased. The results are presented in Figure 2, which is generated using the mediation software. In the left panel, the true ACME is plotted against values of the sensitivity parameter ρ, which equals the correlation between the error terms in the mediator and outcome models and thus represents both the degree and direction of the unobserved confounding factor between anxiety and immigration preference. When ρ is zero, sequential ignorability holds and the true ACME coincides with the estimate reported in Table 2. The shaded region in the plot marks the 95% confidence intervals for each value of ρ."
+
+Code:
+
+```{r}
+#https://imai.fas.harvard.edu/research/files/mediationR2.pdf
+
+data("framing")
+head(framing)
+
+#first fitting a model to predict the proposed mediator, anxiety (emo), controlling for a bunch of pre-treatment covariates
+med.fit <- lm(emo ~ treat + age + educ + gender + income, data = framing)
+
+#then fitting a model to predict the outcome, agreeing to send a message to a congresseman about immigration, controlling for same covariates
+out.fit <- glm(cong_mesg ~ emo + treat + age + educ + gender + income, data = framing, family = binomial("probit"))
+
+#then we use the function mediation::mediate, specifying both treatment variable (dummy?) and mediator.
+med.out <- mediate(med.fit, out.fit, treat = "treat", mediator = "emo", robustSE = TRUE, sims = 1000)
+summary(med.out)
+
+#we can also allow for mediator-treatment interaction.
+out.fit <- glm(cong_mesg ~ emo * treat + age + educ + gender + income, data = framing, family = binomial("probit"))
+med.out <- mediate(med.fit, out.fit, treat = "treat", mediator = "emo", robustSE = TRUE, sims = 1000)
+summary(med.out)
+#testing the significance of the interaction
+test.TMint(med.out, conf.level = .95)
+
+#section 3.2. describes moderated mediation, let's put a pin in that.
+
+#code for sensitivity analysis.
+#First let's switch back to the simple model without interaction
+out.fit <- glm(cong_mesg ~ emo + treat + age + educ + gender + income, data = framing, family = binomial("probit"))
+med.out <- mediate(med.fit, out.fit, treat = "treat", mediator = "emo", robustSE = TRUE, sims = 1000)
+sens.out <- medsens(med.out, rho.by=0.1, effect.type = "indirect", sims = 100)
+summary(sens.out) #works despite warning message...
+
+#we can then plot the sensitivity analysis
+plot(sens.out, sens.par = "rho", main = "Anxiety", ylim = c(-0.2, 0.2))
+```
